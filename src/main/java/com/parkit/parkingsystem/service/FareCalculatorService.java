@@ -14,12 +14,17 @@ public class FareCalculatorService {
 		
 		
 
-		long inHour = ticket.getInTime().getTime();
-		long outHour = ticket.getOutTime().getTime();
+		double inHour = ticket.getInTime().getTime();
+		double outHour = ticket.getOutTime().getTime();
+		
+		System.out.println(inHour);
+		System.out.println(outHour);
+
 
 		// TODO: Some tests are failing here. Need to check if this logic is correct
-		double duration =  Math.round((outHour - inHour)/1000/60/60);
-		System.out.println("Temps dans le parking : " + duration);
+		double duration =  (double)Math.round(((outHour - inHour)/1000/60/60)*100.0)/100.0;
+		
+		System.out.println("Temps dans le parking : " + duration + " heure(s)");
 
 		// Gratuité des 30 minutes de parking
 		if (duration < 0.5) {
@@ -28,20 +33,21 @@ public class FareCalculatorService {
 			switch (ticket.getParkingSpot().getParkingType()) {
 			case CAR: {
 				if (nb >= 1) {
-					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR * 0.95);
+					ticket.setPrice(Math.round(duration * Fare.CAR_RATE_PER_HOUR * 0.95*100.0)/100.0);
 				} else {
-					ticket.setPrice(duration * Fare.CAR_RATE_PER_HOUR);
+					ticket.setPrice(Math.round(duration * Fare.CAR_RATE_PER_HOUR*100.0)/100.0);
 				}
 				break;
 			}
 			case BIKE: {
-				ticket.setPrice(duration * Fare.BIKE_RATE_PER_HOUR);
+				ticket.setPrice(Math.round(duration * Fare.BIKE_RATE_PER_HOUR*100.0)/100.0);
 				break;
 			}
 			default:
 				throw new IllegalArgumentException("Unkown Parking Type");
 			}
 		}
+		System.out.println("Le prix est de : " + ticket.getPrice());
 
 	}
 }
